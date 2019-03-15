@@ -15,20 +15,32 @@ class TweetCellTableViewCell: UITableViewCell {
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var favButton: UIButton!
     @IBOutlet weak var retweet: UIButton!
+    var favorited:Bool = false
+    var tweetId:Int = -1
     
     @IBAction func favRetweet(_ sender: Any) {
+        let toBeFavorited = !favorited
+        if (toBeFavorited) {
+            TwitterAPICaller.client?.favoriteTweet(tweetId: tweetId, success: {
+                setFavorite(true)
+            }, failure: { (error) in
+                print("Favorite did not succeed: \(error)")
+            })
+        } else {
+            TwitterAPICaller.client?.unfavoriteTweet(tweetId: tweetId, success: {
+                self.setFavorite(false)
+            }, failure: { (error) in
+                print("Unfavorite did not succeed: \(error)")
+            })
+        }
     }
+    
     @IBAction func retweetTweet(_ sender: Any) {
     }
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
-    
-    
-    
-    var favorited:Bool = false
-    var tweetId:Int = -1
 
     func setFavorite(_ isFavorited:Bool){
         favorited = isFavorited
